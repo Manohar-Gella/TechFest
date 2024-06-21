@@ -1,0 +1,120 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Accommodation Allocation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Upload Group and Hostel Information</h1>
+        <form id="uploadForm" class="space-y-4">
+            <div>
+                <label for="groupFile" class="block text-sm font-medium text-gray-700">Group Information CSV:</label>
+                <input type="file" id="groupFile" name="groupFile" accept=".csv" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="hostelFile" class="block text-sm font-medium text-gray-700">Hostel Information CSV:</label>
+                <input type="file" id="hostelFile" name="hostelFile" accept=".csv" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Upload and Allocate
+            </button>
+        </form>
+        <h2 class="text-xl font-bold mt-8 text-center">Allocation Results</h2>
+        <pre id="results" class="mt-4 bg-gray-100 p-4 rounded-md text-sm"></pre>
+    </div>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('groupFile', document.getElementById('groupFile').files[0]);
+            formData.append('hostelFile', document.getElementById('hostelFile').files[0]);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById('results').textContent = JSON.stringify(result, null, 2);
+        });
+    </script>
+</body>
+</html>
+ -->
+
+
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Group Accommodation Allocation</title>
+     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+ </head>
+ <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+         <h1 class="text-2xl font-bold mb-6 text-center">Upload Group and Hostel Information</h1>
+         <form id="uploadForm" class="space-y-4">
+             <div>
+                 <label for="groupFile" class="block text-sm font-medium text-gray-700">Group Information CSV:</label>
+                 <input type="file" id="groupFile" name="groupFile" accept=".csv" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+             </div>
+             <div>
+                 <label for="hostelFile" class="block text-sm font-medium text-gray-700">Hostel Information CSV:</label>
+                 <input type="file" id="hostelFile" name="hostelFile" accept=".csv" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+             </div>
+             <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                 Upload and Allocate
+             </button>
+         </form>
+         <h2 class="text-xl font-bold mt-8 text-center">Allocation Results</h2>
+         <div id="results" class="mt-4"></div>
+     </div>
+     <script>
+         document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+             event.preventDefault();
+             const formData = new FormData();
+             formData.append('groupFile', document.getElementById('groupFile').files[0]);
+             formData.append('hostelFile', document.getElementById('hostelFile').files[0]);
+ 
+             const response = await fetch('/upload', {
+                 method: 'POST',
+                 body: formData
+             });
+ 
+             const result = await response.json();
+             displayResults(result);
+         });
+ 
+         function displayResults(results) {
+             let tableHtml = '<table class="table-auto w-full border-collapse border border-gray-200 mt-4">';
+             tableHtml += '<thead class="bg-gray-200">';
+             tableHtml += '<tr><th class="border border-gray-300 px-4 py-2">Group ID</th><th class="border border-gray-300 px-4 py-2">Hostel Name</th><th class="border border-gray-300 px-4 py-2">Room Number</th><th class="border border-gray-300 px-4 py-2">Members Allocated</th></tr>';
+             tableHtml += '</thead>';
+             tableHtml += '<tbody>';
+ 
+             results.forEach(result => {
+                 tableHtml += '<tr>';
+                 tableHtml += `<td class="border border-gray-300 px-4 py-2">${result['Group ID']}</td>`;
+                 tableHtml += `<td class="border border-gray-300 px-4 py-2">${result['Hostel Name']}</td>`;
+                 tableHtml += `<td class="border border-gray-300 px-4 py-2">${result['Room Number']}</td>`;
+                 tableHtml += `<td class="border border-gray-300 px-4 py-2">${result['Members Allocated']}</td>`;
+                 tableHtml += '</tr>';
+             });
+ 
+             tableHtml += '</tbody>';
+             tableHtml += '</table>';
+ 
+             document.getElementById('results').innerHTML = tableHtml;
+         }
+     </script>
+ </body>
+</html>
+ 
+
+
+
+
